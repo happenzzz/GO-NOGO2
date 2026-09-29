@@ -153,6 +153,8 @@
     background:#3b3226;color:#fff;font-family:"Jua",sans-serif;font-size:clamp(16px,1.6vw,22px);text-align:center;
     padding:12px 24px;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:all .4s cubic-bezier(.3,1.4,.5,1);pointer-events:none}
   .toast.show{opacity:1;transform:translate(-50%,0)}
+  body.teacher .rules{display:none}
+  body.teacher .decide{padding-top:8px}
   .toast.good{background:var(--go-deep)} .toast.bad{background:var(--stop-deep)}
 </style>
 </head>
@@ -161,7 +163,7 @@
   <header>
     <div class="title">
       <h1>문화일까, 아닐까? <span class="tag"><span class="g">GO</span>/<span class="s">NO-GO</span>(계속/멈춰) 토의판</span><span class="teacher">교사용 정답</span></h1>
-      <div class="sub">카드를 끌어 놓으면 맞으면 <b>딩동댕</b>, 틀리면 <b>땡</b> 소리가 나요. 맞힌 카드는 그 자리에 고정돼요.</div>
+      <div class="sub"><b>① 사람들이 배우고 익히는 것인가요?</b>　<b>② 한 사회 사람들의 공통의 생활 방식인가요?</b></div>
     </div>
     <div class="btns">
       <span class="score" id="score">맞힌 카드 <b>0</b> / 20</span>
@@ -316,7 +318,7 @@ function metrics(){
   const padV = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
   const padH = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
   const W = board.clientWidth, H = board.clientHeight;
-  const centerW = Math.round(Math.max(210, Math.min(360, W * .23)));
+  const centerW = TEACHER ? Math.round(Math.max(280, Math.min(620, W * .34))) : Math.round(Math.max(210, Math.min(360, W * .23)));
   document.documentElement.style.setProperty('--centerW', centerW + 'px');
   const foot = zones.center.querySelector('.foot').offsetHeight;
   zones.center.style.setProperty('--foot', foot + 'px');
@@ -327,7 +329,8 @@ const rowsH = (rows, cw) => rows * (cw * R + G) - G;
 const trayH = (n, cw, m) => m.head + m.bd + m.padV + (n ? rowsH(Math.ceil(n / cols(m.W - m.bd - m.padH, cw)), cw) : Math.max(56, cw * .5));
 const zoneW = m => (m.W - 2 * m.gap - m.centerW) / 2 - m.bd - m.padH;
 const zoneH = (n, cw, m) => m.head + m.bd + m.padV + rowsH(Math.max(1, Math.ceil(n / cols(zoneW(m), cw))), cw);
-const centerH = (cw, m) => m.centerFixed + cw * R * 1.08;
+const CENTER_SCALE = TEACHER ? 1.7 : 1.08;   // 교사용: 토의판 카드를 크게
+const centerH = (cw, m) => m.centerFixed + Math.min(cw * CENTER_SCALE, m.centerW - 28) * R;
 function layout(){
   board.style.transition = 'none';
   board.style.gridTemplateRows = 'minmax(0,1fr) minmax(0,1fr)';
@@ -567,6 +570,7 @@ $('#fsBtn').addEventListener('click', () => {
   else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
 });
 
+if(TEACHER) document.body.classList.add('teacher');
 build(); updateCounts(false); layout();
 let rT; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(layout, 80); });
 document.addEventListener('fullscreenchange', () => setTimeout(layout, 80));
