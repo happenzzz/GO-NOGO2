@@ -13,7 +13,7 @@
     --stop:#e5484d; --stop-soft:#fdeeee; --stop-line:#f3a9ab; --stop-deep:#b8272c;
     --talk:#f2a900; --talk-soft:#fff7dc; --talk-line:#f5d27a;
     --tray-line:#e2d6c1;
-    --cw:120px; --r:1.32; --centerW:300px;
+    --cw:120px; --tw:150px; --r:1.1; --centerW:400px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -24,7 +24,7 @@
     font-family:"Gowun Dodum","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
     -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
   }
-  .app{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:12px 16px 16px;gap:12px}
+  .app{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:10px 14px 12px;gap:10px}
 
   /* header */
   header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -49,9 +49,8 @@
   /* board */
   .board{flex:1;min-height:0;display:grid;gap:12px;
     grid-template-columns:minmax(0,1fr) var(--centerW) minmax(0,1fr);
-    grid-template-rows:minmax(0,1.1fr) minmax(0,1fr);
-    grid-template-areas:"go center stop" "tray tray tray";
-    transition:grid-template-rows .45s cubic-bezier(.3,1,.4,1)}
+    grid-template-rows:minmax(0,1fr) auto;
+    grid-template-areas:"go center stop" "tray tray tray"}
   .panel{position:relative;display:flex;flex-direction:column;min-height:0;border-radius:22px;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s}
   .head{display:flex;align-items:center;gap:10px;padding:12px 14px 4px;min-height:52px}
   .lbl{font-family:"Jua",sans-serif;font-size:clamp(20px,2vw,30px);line-height:1;white-space:nowrap}
@@ -74,6 +73,15 @@
   #tray{grid-area:tray;background:#fff;border:3px solid var(--tray-line);box-shadow:0 6px 20px rgba(80,60,30,.07)}
   #tray .lbl{font-size:clamp(18px,1.6vw,24px)} #tray .ico{background:#c9b48f}
   #tray .cnt{background:#f5eee1;color:var(--muted)}
+  #tray .head{min-height:44px;padding:8px 14px 2px}
+  #tray .slot{--cw:var(--tw);flex:none;display:flex;flex-wrap:nowrap;gap:12px;overflow-x:auto;overflow-y:hidden;
+    justify-content:safe center;align-items:center;height:calc(var(--tw)*var(--r) + 22px);padding:6px 14px 14px;
+    scrollbar-width:thin;scrollbar-color:#d8c9ad transparent}
+  #tray .card{touch-action:pan-x}
+  .arrow{width:40px;height:40px;border-radius:50%;border:0;background:#f5eee1;color:#8a7458;font-family:"Jua",sans-serif;font-size:24px;line-height:1;cursor:pointer;flex:none}
+  .arrow:active{transform:scale(.92)}
+  #go .slot,#stop .slot{gap:8px}
+  .slot.compact .cap{font-size:12px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
   #tray .ghost{color:#b9a888;opacity:0} #tray.empty .ghost{opacity:1}
 
   /* discussion board (center) */
@@ -81,11 +89,17 @@
   #center .head{justify-content:center}
   #center .lbl{color:#9a6a00}
   #center .ico{background:var(--talk)}
-  #center .slot.one{container-type:size;display:flex;align-items:center;justify-content:center;padding:6px 10px;overflow:hidden}
-  #center .slot.one > *{--cw:min(calc(100cqw - 8px), calc((100cqh - 8px) / 1.32))}
+  #center .slot.one{container-type:size;container-name:board;display:flex;align-items:center;justify-content:center;padding:4px 10px;overflow:hidden}
+  #center .slot.one > *{--cw:min(calc(100cqw - 8px), calc((100cqh - 8px) / 1.1))}
+  @container board (min-aspect-ratio: 8/5){
+    #center .slot.one > .card, #center .slot.one > .ph{--cw:min(calc(100cqh - 8px), calc((100cqw - 8px) / 2.1));width:calc(var(--cw) * 2.1);height:var(--cw)}
+    #center .slot.one > .card{flex-direction:row;align-items:center;gap:4%;padding:8px 16px 8px 8px}
+    #center .slot.one > .card .pic{flex:0 0 auto;height:100%;aspect-ratio:1/1}
+    #center .slot.one > .card .cap{flex:1;min-width:0;text-align:left;margin:0;font-size:clamp(15px, calc(var(--cw) * .12), 30px);line-height:1.35}
+  }
   #center .ghost{top:52px;bottom:auto;height:calc(100% - 52px - var(--foot,120px));color:#d9a93a}
   .rules{padding:0 12px 6px;display:flex;flex-direction:column;gap:5px}
-  .q{display:flex;gap:7px;align-items:flex-start;background:#fff;border-radius:12px;padding:6px 10px;
+  .q{display:flex;gap:7px;align-items:flex-start;background:#fff;border-radius:12px;padding:5px 10px;
     font-weight:700;font-size:clamp(12px,1.05vw,15px);line-height:1.3;word-break:keep-all;color:#5a4410}
   .q b{font-family:"Jua",sans-serif;font-weight:400;flex:none;width:1.5em;height:1.5em;border-radius:50%;display:grid;place-items:center;background:var(--talk);color:#fff;font-size:.95em}
   .decide{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 12px 12px}
@@ -122,7 +136,7 @@
     min-width:1.7em;height:1.7em;border-radius:50%;display:grid;place-items:center;background:#f4ecdc;color:#8a7458}
   .card .pic{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:2px}
   .card img{max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
-  .card .cap{margin:3px 1px 1px;text-align:center;font-weight:700;font-size:clamp(11px,calc(var(--cw)*.1),24px);line-height:1.28;
+  .card .cap{margin:3px 2px 2px;text-align:center;font-weight:700;font-size:clamp(11px,calc(var(--cw)*.095),22px);line-height:1.3;
     word-break:keep-all;overflow-wrap:anywhere;color:#40362a}
   .card.lifted{position:fixed;z-index:1000;margin:0;pointer-events:none;cursor:grabbing;border-color:#ffcf5a;
     box-shadow:0 18px 40px rgba(60,40,10,.28),0 4px 10px rgba(60,40,10,.15)}
@@ -145,16 +159,32 @@
   .hint-q{font-family:"Jua",sans-serif;font-size:clamp(20px,2.4vw,28px);margin:18px 0 6px;color:var(--muted)}
   .hint-text{font-family:"Jua",sans-serif;font-size:clamp(24px,3.2vw,38px);line-height:1.5;margin:6px 0 22px;word-break:keep-all}
   .hint-text em{font-style:normal;background:linear-gradient(transparent 60%,#ffe27a 60%)}
-  .zoom .sheet{max-width:min(520px,100%)}
-  .zoom img{width:100%;max-height:52vh;object-fit:contain;display:block;margin:0 auto}
+  .zoom .sheet{max-width:min(620px,100%)}
+  .zoom img{width:100%;max-height:56vh;object-fit:contain;display:block;margin:0 auto}
   .znum{font-family:"Jua",sans-serif;font-size:20px;color:#8a7458;background:#f4ecdc;border-radius:999px;padding:4px 14px;display:inline-block;margin-bottom:8px}
   .zcap{font-family:"Jua",sans-serif;font-size:clamp(22px,3vw,32px);line-height:1.4;margin:12px 0 18px;word-break:keep-all}
   .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,30px);opacity:0;z-index:1500;max-width:calc(100vw - 32px);
     background:#3b3226;color:#fff;font-family:"Jua",sans-serif;font-size:clamp(16px,1.6vw,22px);text-align:center;
     padding:12px 24px;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:all .4s cubic-bezier(.3,1.4,.5,1);pointer-events:none}
   .toast.show{opacity:1;transform:translate(-50%,0)}
-  body.teacher .rules{display:none}
-  body.teacher .decide{padding-top:8px}
+  .hq{display:none}
+  @media (max-height:820px) and (min-width:1000px){
+    .hq{display:flex;flex-direction:column;gap:3px;margin-right:auto}
+    .hq .q{padding:3px 12px;font-size:14px;background:#fff7dc;border:1.5px solid var(--talk-line)}
+    #center .rules{display:none}
+    #center .decide{padding-top:6px}
+    .title{margin-right:0}
+  }
+  @media (max-height:820px){
+    body.teacher h1 .tag{display:none}
+    .sub{display:none}
+    h1{font-size:clamp(20px,2.2vw,28px)}
+    .btn{padding:8px 14px;font-size:16px}
+    .score{padding:7px 14px;font-size:16px}
+    .head{min-height:46px;padding:8px 12px 2px}
+    .lbl{font-size:clamp(18px,1.8vw,26px)}
+    .ico{width:32px;height:32px}
+  }
   .toast.good{background:var(--go-deep)} .toast.bad{background:var(--stop-deep)}
 </style>
 </head>
@@ -163,7 +193,11 @@
   <header>
     <div class="title">
       <h1>문화일까, 아닐까? <span class="tag"><span class="g">GO</span>/<span class="s">NO-GO</span>(계속/멈춰) 토의판</span><span class="teacher">교사용 정답</span></h1>
-      <div class="sub"><b>① 사람들이 배우고 익히는 것인가요?</b>　<b>② 한 사회 사람들의 공통의 생활 방식인가요?</b></div>
+      <div class="sub">카드를 끌어 놓으면 맞으면 <b>딩동댕</b>, 틀리면 <b>땡</b> 소리가 나요. 맞힌 카드는 그 자리에 고정돼요.</div>
+    </div>
+    <div class="hq">
+      <div class="q"><b>1</b><span>사람들이 <u>배우고 익히는</u> 것인가요?</span></div>
+      <div class="q"><b>2</b><span>한 사회 사람들의 <u>공통의 생활 방식</u>인가요?</span></div>
     </div>
     <div class="btns">
       <span class="score" id="score">맞힌 카드 <b>0</b> / 20</span>
@@ -221,6 +255,7 @@
       <div class="head">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v13"/></svg></span>
         <span class="lbl">사례 카드</span><span class="cnt">남은 카드 20장</span>
+        <button class="arrow" data-dir="-1" aria-label="왼쪽으로">‹</button><button class="arrow" data-dir="1" aria-label="오른쪽으로">›</button>
       </div>
       <div class="ghost">카드를 모두 옮겼어요!</div>
       <div class="slot"></div>
@@ -308,48 +343,38 @@ function makeCard(i){
 }
 function build(){ const tray = slotOf('tray'); shuffle([...Array(20).keys()]).forEach(i => tray.appendChild(makeCard(i))); }
 
-/* ---------- layout ---------- */
-const R = 1.32, G = 10;
-let CW = 120, M = null;
+/* ---------- layout ----------
+   · 사례 카드: 아래쪽 한 줄(가로로 넘겨 보기), 화면 높이에 맞춰 크게
+   · 토의판: 화면 폭의 약 1/3, 넓으면 그림+글을 옆으로 크게
+   · GO / NO-GO 칸: 들어온 카드 수에 맞춰 스크롤 없이 가장 크게 */
+const R = 1.1;
+let TW = 150;
 const board = $('.board');
-function metrics(){
-  const head = zones.tray.querySelector('.head').offsetHeight;
-  const cs = getComputedStyle(slotOf('tray'));
-  const padV = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
-  const padH = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-  const W = board.clientWidth, H = board.clientHeight;
-  const centerW = TEACHER ? Math.round(Math.max(280, Math.min(620, W * .34))) : Math.round(Math.max(210, Math.min(360, W * .23)));
-  document.documentElement.style.setProperty('--centerW', centerW + 'px');
-  const foot = zones.center.querySelector('.foot').offsetHeight;
-  zones.center.style.setProperty('--foot', foot + 'px');
-  return { head, padV, padH, bd:6, W, H, gap:12, centerW, centerFixed: head + foot + 6 + 12 };
-}
-const cols = (w, cw) => Math.max(1, Math.floor((w + G) / (cw + G)));
-const rowsH = (rows, cw) => rows * (cw * R + G) - G;
-const trayH = (n, cw, m) => m.head + m.bd + m.padV + (n ? rowsH(Math.ceil(n / cols(m.W - m.bd - m.padH, cw)), cw) : Math.max(56, cw * .5));
-const zoneW = m => (m.W - 2 * m.gap - m.centerW) / 2 - m.bd - m.padH;
-const zoneH = (n, cw, m) => m.head + m.bd + m.padV + rowsH(Math.max(1, Math.ceil(n / cols(zoneW(m), cw))), cw);
-const CENTER_SCALE = TEACHER ? 1.7 : 1.08;   // 교사용: 토의판 카드를 크게
-const centerH = (cw, m) => m.centerFixed + Math.min(cw * CENTER_SCALE, m.centerW - 28) * R;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function layout(){
-  board.style.transition = 'none';
-  board.style.gridTemplateRows = 'minmax(0,1fr) minmax(0,1fr)';
-  M = metrics();
-  const states = [[20,0,0],[0,12,8],[8,6,6],[14,3,3]];
-  let best = 70;
-  for(let cw = 210; cw >= 70; cw--){
-    if(states.every(([t,y,n]) => trayH(t,cw,M) + Math.max(zoneH(y,cw,M), zoneH(n,cw,M), centerH(cw,M)) + M.gap <= M.H)){ best = cw; break; }
+  const vh = window.innerHeight, W = board.clientWidth;
+  const th = clamp(Math.min(vh * .25, window.innerWidth * .2), 135, 250);
+  TW = Math.floor(th / R);
+  document.documentElement.style.setProperty('--tw', TW + 'px');
+  document.documentElement.style.setProperty('--centerW', Math.round(clamp(W * .34, 290, 640)) + 'px');
+  setRows();
+}
+function fitZone(z){
+  const slot = slotOf(z), cs = getComputedStyle(slot);
+  const n = Math.max(6, slot.querySelectorAll('.card, .ph').length);
+  const W = slot.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+  const H = slot.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 2;
+  const g = 8; let best = 56;
+  for(let cols = 1; cols <= 10; cols++){
+    const rows = Math.ceil(n / cols);
+    const w = Math.min((W - (cols - 1) * g) / cols, ((H - (rows - 1) * g) / rows) / R);
+    if(w > best) best = w;
   }
-  CW = best;
-  document.documentElement.style.setProperty('--cw', CW + 'px');
-  setRows(); void board.offsetWidth; board.style.transition = '';
+  best = Math.floor(Math.min(best, TW));
+  slot.style.setProperty('--cw', best + 'px');
+  slot.classList.toggle('compact', best < 112);
 }
-function setRows(){
-  if(!M) return;
-  const t = slotOf('tray').querySelectorAll('.card, .ph').length;
-  const h = Math.min(trayH(t, CW, M), M.H - centerH(CW, M) - M.gap);
-  board.style.gridTemplateRows = `minmax(0,1fr) ${Math.round(Math.max(h, M.head + 40))}px`;
-}
+function setRows(){ fitZone('go'); fitZone('stop'); }
 
 /* ---------- FLIP for cards that shift around ---------- */
 function snapshot(){ const m = new Map(); allCards().forEach(c => { if(!c.classList.contains('lifted')) m.set(c, c.getBoundingClientRect()); }); return m; }
@@ -368,11 +393,15 @@ function flip(first){
 function floatCard(card){
   const r = card.getBoundingClientRect();
   const first = snapshot(); first.delete(card);
-  card.style.width = r.width + 'px'; card.style.height = r.height + 'px';
-  card.style.left = r.left + 'px'; card.style.top = r.top + 'px';
+  let w = r.width, h = r.height, l = r.left, t = r.top;
+  if(card.parentElement === slotOf('center')){ w = TW; h = TW * R; l = r.left + r.width/2 - w/2; t = r.top + r.height/2 - h/2; }
+  card.style.setProperty('--cw', w + 'px');
+  card.style.width = w + 'px'; card.style.height = h + 'px';
+  card.style.left = l + 'px'; card.style.top = t + 'px';
   card.style.transform = 'translate(0px,0px) rotate(0deg) scale(1)';
   card.classList.add('lifted');
   document.body.appendChild(card);
+  setRows();
   flip(first);
 }
 /* fly a floated card into a slot (before `before`) with a bouncy landing */
@@ -380,14 +409,16 @@ function flyInto(card, slot, before, done){
   const first = snapshot();
   const ph = document.createElement('div'); ph.className = 'ph';
   slot.insertBefore(ph, before && before.parentElement === slot ? before : null);
-  flip(first); setRows();
+  setRows(); flip(first);
   const sr = slot.getBoundingClientRect(), p0 = ph.getBoundingClientRect();
   if(p0.bottom > sr.bottom) slot.scrollTop += p0.bottom - sr.bottom + 8;
   else if(p0.top < sr.top) slot.scrollTop -= sr.top - p0.top + 8;
+  if(p0.right > sr.right) slot.scrollLeft += p0.right - sr.right + 14;
+  else if(p0.left < sr.left) slot.scrollLeft -= sr.left - p0.left + 14;
   const pr = ph.getBoundingClientRect();
   const L = parseFloat(card.style.left), T = parseFloat(card.style.top), w = parseFloat(card.style.width), h = parseFloat(card.style.height);
   const from = card.style.transform;
-  const to = `translate(${pr.left + pr.width/2 - (L + w/2)}px,${pr.top + pr.height/2 - (T + h/2)}px) rotate(0deg) scale(${pr.width / w})`;
+  const to = `translate(${pr.left + pr.width/2 - (L + w/2)}px,${pr.top + pr.height/2 - (T + h/2)}px) rotate(0deg) scale(${Math.min(pr.width / w, pr.height / h)})`;
   card.style.transform = to;
   const land = () => {
     card.classList.remove('lifted'); card.style.cssText = '';
@@ -453,8 +484,10 @@ function lift(){
   const { card } = drag;
   drag.home = { slot: card.parentElement, next: card.nextSibling };
   const r = card.getBoundingClientRect();
-  drag.ox = drag.sx - r.left; drag.oy = drag.sy - r.top;
+  const fromCenter = card.parentElement === slotOf('center');
   floatCard(card);
+  if(fromCenter){ drag.ox = parseFloat(card.style.width) / 2; drag.oy = parseFloat(card.style.height) / 2; }
+  else { drag.ox = drag.sx - r.left; drag.oy = drag.sy - r.top; }
   drag.lifted = true;
   render();
 }
@@ -469,7 +502,13 @@ function zoneAt(x, y){ const el = document.elementFromPoint(x, y); const z = el 
 addEventListener('pointermove', e => {
   if(!drag || e.pointerId !== drag.id) return;
   drag.x = e.clientX; drag.y = e.clientY;
-  if(!drag.lifted){ if(Math.hypot(drag.x - drag.sx, drag.y - drag.sy) < 7) return; lift(); }
+  if(!drag.lifted){
+    const dx = drag.x - drag.sx, dy = drag.y - drag.sy;
+    if(Math.hypot(dx, dy) < 8) return;
+    // 사례 카드 줄에서 손가락으로 옆으로 밀면 넘겨 보기, 위로 끌면 카드 들기
+    if(e.pointerType !== 'mouse' && drag.card.parentElement === slotOf('tray') && Math.abs(dx) > Math.abs(dy)){ drag = null; return; }
+    lift();
+  }
   const z = zoneAt(drag.x, drag.y);
   if(z !== drag.over){ if(drag.over) zones[drag.over].classList.remove('over'); if(z) zones[z].classList.add('over'); drag.over = z; }
 }, { passive:false });
@@ -487,7 +526,18 @@ function onUp(e){
   settle(d.card, target, before, d.home);
 }
 addEventListener('pointerup', onUp);
-addEventListener('pointercancel', onUp);
+addEventListener('pointercancel', e => {
+  if(!drag || e.pointerId !== drag.id) return;
+  if(!drag.lifted){ drag = null; return; }   // 넘겨 보기로 바뀐 경우
+  onUp(e);
+});
+/* 사례 카드 줄: 화살표·마우스 휠로 넘겨 보기 */
+document.querySelectorAll('.arrow').forEach(b => b.addEventListener('click', () => {
+  const sl = slotOf('tray'); sl.scrollBy({ left: +b.dataset.dir * sl.clientWidth * .8, behavior:'smooth' });
+}));
+slotOf('tray').addEventListener('wheel', e => {
+  if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ slotOf('tray').scrollLeft += e.deltaY; e.preventDefault(); }
+}, { passive:false });
 
 /* GO / NO-GO buttons on the discussion board */
 function decide(z){
@@ -530,9 +580,14 @@ function updateCounts(animate){
 }
 
 /* ---------- modals / toast ---------- */
-function openModal(m){ m.classList.add('show'); }
+// 터치로 카드를 누르면, 손을 뗄 때 생기는 클릭이 방금 연 창을 바로 닫아 버리는 문제를 막음
+let modalOpenedAt = 0;
+function openModal(m){ modalOpenedAt = performance.now(); m.classList.add('show'); }
 function closeModals(){ document.querySelectorAll('.overlay.show').forEach(m => m.classList.remove('show')); }
-document.querySelectorAll('.overlay').forEach(m => m.addEventListener('click', e => { if(e.target === m || e.target.closest('[data-close]')) closeModals(); }));
+document.querySelectorAll('.overlay').forEach(m => m.addEventListener('click', e => {
+  if(performance.now() - modalOpenedAt < 500) return;
+  if(e.target === m || e.target.closest('[data-close]')) closeModals();
+}));
 addEventListener('keydown', e => { if(e.key === 'Escape') closeModals(); });
 function openZoom(card){
   const i = +card.dataset.id - 1, m = $('#zoomModal');
@@ -562,7 +617,7 @@ $('#resetBtn').addEventListener('click', () => {
     c.classList.remove('locked'); const o = c.querySelector('.ok'); if(o) o.remove();
     tray.appendChild(c);
   });
-  flip(first); updateCounts(true); tray.scrollTop = 0;
+  flip(first); updateCounts(true); tray.scrollLeft = 0;
 });
 $('#fsBtn').addEventListener('click', () => {
   const d = document, el = d.documentElement;
